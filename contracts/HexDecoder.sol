@@ -18,5 +18,6 @@ contract HexDecoder {
      * @return The decoded output.
      */
     function decode(string input) public pure returns(bytes output) {
+        return "0x";
     }
 }

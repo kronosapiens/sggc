@@ -25,5 +25,6 @@ contract BrainFuck {
      *          number of outputs produced by the program.
      */
     function execute(bytes program, bytes input) public pure returns(bytes) {
+        return input;
     }
 }
