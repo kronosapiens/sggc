@@ -32,11 +32,14 @@ contract BrainFuck {
      */
     function execute(bytes program, bytes input) public pure returns(bytes) {
         // Reusable counters
-        uint i;
-        uint j;
+        uint i = 0;
+        uint j = 0;
+
+        // Remove non-langage characters
+        bytes memory clean = cleanProgram(program);
 
         // Find jumps
-        Jump[] memory jumps = findJumps(program);
+        Jump[] memory jumps = findJumps(clean);
 
         // Initialize data and input
         uint8[1024] memory data;
@@ -49,8 +52,8 @@ contract BrainFuck {
         // Run program
         uint dp = 0;
         byte instruction;
-        for (uint pc = 0; pc < program.length; pc++) {
-            instruction = program[pc];
+        for (uint pc = 0; pc < clean.length; pc++) {
+            instruction = clean[pc];
             if (instruction == byte(">")) {
                 dp++;
 
@@ -131,6 +134,32 @@ contract BrainFuck {
         }
 
         return jumps;
+    }
+
+    function cleanProgram(bytes program) internal pure returns(bytes) {
+        byte inst;
+        uint count;
+        for (uint i = 0; i < program.length; i++) {
+            inst = program[i];
+            if (inst == byte(">") || inst == byte("<") ||
+                inst == byte("+") || inst == byte("-") || 
+                inst == byte(".") || inst == byte(",") || 
+                inst == byte("[") || inst == byte("]") 
+            ) count++;
+        }
+
+        bytes memory clean = new bytes(count);
+        count = 0;
+        for (i = 0; i < program.length; i++) {
+            inst = program[i];
+            if (
+                inst == byte(">") || inst == byte("<") ||
+                inst == byte("+") || inst == byte("-") || 
+                inst == byte(".") || inst == byte(",") || 
+                inst == byte("[") || inst == byte("]")
+            ) clean[count++] = inst;
+        }
+        return clean;
     }
 }
 
