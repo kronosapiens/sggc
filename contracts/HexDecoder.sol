@@ -18,6 +18,16 @@ contract HexDecoder {
      * @return The decoded output.
      */
     function decode(string input) public pure returns(bytes output) {
-        return "0x";
+        bytes input_b = bytes(input);
+        output = new bytes[input_b.length + 2];
+        output[0] = "0";
+        output[1] = "x";
+        for (uint i = 0; i < input_b.length; i++) {
+            if (input_b[i] >= 65 && input_b[i] <= 90) {
+                output[i+2] = bytes1(int(input_b[i]) + 32);
+            } else {
+                output[i+2] = intput_b[i]
+            }
+        }
     }
 }
