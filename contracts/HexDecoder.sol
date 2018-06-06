@@ -18,16 +18,29 @@ contract HexDecoder {
      * @return The decoded output.
      */
     function decode(string input) public pure returns(bytes output) {
-        bytes input_b = bytes(input);
-        output = new bytes[input_b.length + 2];
-        output[0] = "0";
-        output[1] = "x";
-        for (uint i = 0; i < input_b.length; i++) {
-            if (input_b[i] >= 65 && input_b[i] <= 90) {
-                output[i+2] = bytes1(int(input_b[i]) + 32);
-            } else {
-                output[i+2] = intput_b[i]
-            }
+        bytes memory input_b = bytes(input);
+        output = new bytes(input_b.length / 2);
+        for (uint i = 0; i < input_b.length; i += 2) {
+            byte a = input_b[i];
+            byte b = input_b[i+1];
+            output[i/2] = byte(char2hex(a)*16 + char2hex(b));
         }
+    }
+
+    function char2hex(byte chr) internal pure returns(uint hx) {
+
+            // number 0-9 (0x30 - 0x39)
+            if (chr >= 48 && chr <= 57) { 
+                hx = uint(chr) - 48;
+
+            // upper case A-F (0x41 - 0x45)
+            } else if (chr >= 65 && chr <= 70) {
+                hx = 10 + ((uint(chr) + 32) - 97);
+
+            // lower case a-f (0x61 - 0x65)
+            } else if (chr >= 97 && chr <= 102) {
+                hx = 10 + (uint(chr) - 97);
+
+            } else revert();
     }
 }
